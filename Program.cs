@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace project {
 
@@ -84,11 +85,46 @@ namespace project {
         }
     }
 
+    class DocumentManager {
+        private static DocumentManager _instance;
+        private List<Document> _documents = new List<Document>();
+
+        private DocumentManager() { }
+
+        public static DocumentManager Instance {
+            get {
+                if (_instance == null) {
+                    _instance = new DocumentManager();
+                }
+                return _instance;
+            }
+        }
+
+        public void AddDocument(Document document) {
+            _documents.Add(document);
+        }
+
+        public void ShowDocuments() {
+            foreach (var document in _documents) {
+                document.DisplayInfo();
+            }
+        }
+    }
+
 
     class Program {
 
         static void Main() {
+            DocumentManager manager = DocumentManager.Instance;
+        
+            manager.AddDocument(new WordDocument("Отчет", "Иванов", "C:/docs/report.docx", 1200));
+            manager.AddDocument(new PdfDocument("Презентация", "Петров", "C:/docs/presentation.pdf", 15));
+            manager.AddDocument(new ExcelDocument("Финансы", "Сидоров", "C:/docs/finance.xlsx", 3));
+            manager.AddDocument(new TxtDocument("Заметки", "Кузнецов", "C:/docs/notes.txt", 2048));
+            manager.AddDocument(new HtmlDocument("Главная", "Андреев", "C:/docs/index.html", "UTF-8"));
             
+            Console.WriteLine("--- Список документов ---");
+            manager.ShowDocuments();
         }
 
     }
