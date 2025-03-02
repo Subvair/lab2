@@ -120,15 +120,79 @@ namespace project {
 
         static void Main() {
             DocumentManager manager = DocumentManager.Instance;
-        
-        manager.AddDocument(new WordDocument("Отчет", "Иванов", "C:/docs/report.docx", "Финансы", new List<string>{"отчет", "доходы"}, 1200));
-        manager.AddDocument(new PdfDocument("Презентация", "Петров", "C:/docs/presentation.pdf", "Маркетинг", new List<string>{"презентация", "стратегия"}, 15));
-        manager.AddDocument(new ExcelDocument("Финансы", "Сидоров", "C:/docs/finance.xlsx", "Бухгалтерия", new List<string>{"бюджет", "расходы"}, 3));
-        manager.AddDocument(new TxtDocument("Заметки", "Кузнецов", "C:/docs/notes.txt", "Личные", new List<string>{"заметки", "идеи"}, 2048));
-        manager.AddDocument(new HtmlDocument("Главная", "Андреев", "C:/docs/index.html", "Разработка", new List<string>{"веб", "код"}, "UTF-8"));
+            bool running = true;
             
-            Console.WriteLine("--- Список документов ---");
-            manager.ShowDocuments();
+            while (running) {
+                Console.WriteLine("\nМеню:");
+                Console.WriteLine("1. Добавить документ");
+                Console.WriteLine("2. Показать все документы");
+                Console.WriteLine("3. Выйти");
+                Console.Write("Выберите действие: ");
+                
+                string choice = Console.ReadLine();
+                switch (choice) {
+                    case "1":
+                        Console.WriteLine("Выберите тип документа: 1 - Word, 2 - PDF, 3 - Excel, 4 - TXT, 5 - HTML");
+                        string docType = Console.ReadLine();
+                        Console.Write("Введите имя документа: ");
+                        string name = Console.ReadLine();
+                        Console.Write("Введите автора: ");
+                        string author = Console.ReadLine();
+                        Console.Write("Введите путь к файлу: ");
+                        string filePath = Console.ReadLine();
+                        Console.Write("Введите тематику: ");
+                        string topic = Console.ReadLine();
+                        Console.Write("Введите ключевые слова (через запятую): ");
+                        List<string> keywords = new List<string>(Console.ReadLine().Split(","));
+                        
+                        Document document = null;
+                        switch (docType) {
+                            case "1":
+                                Console.Write("Введите количество слов: ");
+                                int wordCount = int.Parse(Console.ReadLine());
+                                document = new WordDocument(name, author, filePath, topic, keywords, wordCount);
+                                break;
+                            case "2":
+                                Console.Write("Введите количество страниц: ");
+                                int pageCount = int.Parse(Console.ReadLine());
+                                document = new PdfDocument(name, author, filePath, topic, keywords, pageCount);
+                                break;
+                            case "3":
+                                Console.Write("Введите количество листов: ");
+                                int sheetCount = int.Parse(Console.ReadLine());
+                                document = new ExcelDocument(name, author, filePath, topic, keywords, sheetCount);
+                                break;
+                            case "4":
+                                Console.Write("Введите размер файла (в байтах): ");
+                                long fileSize = long.Parse(Console.ReadLine());
+                                document = new TxtDocument(name, author, filePath, topic, keywords, fileSize);
+                                break;
+                            case "5":
+                                Console.Write("Введите кодировку файла: ");
+                                string encoding = Console.ReadLine();
+                                document = new HtmlDocument(name, author, filePath, topic, keywords, encoding);
+                                break;
+                            default:
+                                Console.WriteLine("Выбранный тип документа не поддерживается.");
+                                break;
+                        }
+                        
+                        if (document != null) {
+                            manager.AddDocument(document);
+                            Console.WriteLine("Документ добавлен.");
+                        }
+                        break;
+                    case "2":
+                        manager.ShowDocuments();
+                        break;
+                    case "3":
+                        running = false;
+                        break;
+                    default:
+                        Console.WriteLine("Некорректный ввод. Попробуйте снова.");
+                        break;
+                }
+            }
         }
 
     }
